@@ -1,36 +1,68 @@
-import sys,socket,json,base64,pyDes,binascii
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLineEdit
-from pyDes import *
-from login import Ui_Form
-from error import Ui_error
-from reg import Ui_reg
-from ver import Ui_ver
-from msg import Ui_msg
-from mainwin import Ui_MainWindow
-from duihuan import Ui_duihuan
+import sys, json, webbrowser, command
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLineEdit, QMessageBox
+from PyQt5.QtGui import QIcon
+from ui import Ui_Form, Ui_reg, Ui_ver, Ui_MainWindow, Ui_duihuan, Ui_update
 
-def endes(key,data):
-    try:
-            k = pyDes.des(key,pyDes.CBC, "\0\0\0\0\0\0\0\0", pad=None,padmode=pyDes.PAD_PKCS5)
-    except:
-        return "error"
-    d = binascii.hexlify(k.encrypt(data))
-    return d
+img = "image.png"
+str_version = "1.0.0.0"
+int_version = 1
+update = 0
+must_update = 0
+can_update = 0
 
-def DesEncrypt(str):
-    Des_Key = "5GTS&$#G" # Key
-    Des_IV = "\0\0\0\0\0\0\0\0" # 自定IV向量
-    k = des(Des_Key, CBC, Des_IV, pad=None, padmode=PAD_PKCS5)
+def update_command():
+    global update
 
-    EncryptStr = k.encrypt(str)
+    if update == 0:
+        s = command.connect()
+        if not s == False:
+            s.sendall("edition".encode("GB2312"))
+            version = s.recv(1023).decode("GB2312")
+            version2 = version.split("：")
+            new_version = int(version2[1])
+            max_version = int(version2[2])
+            global new_version_num,max_version_num
+            new_version_num = version2[3]
+            max_version_num = version2[4]
 
-    return base64.b64encode(EncryptStr)
+            global can_update,must_update
+            can_update = 0
+            must_update =0
+            if max_version > int_version:
+                must_update = 1
+            if new_version > int_version:
+                can_update = 1
+            update = 1
+
+class updateForm(QMainWindow, Ui_update):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+        self.setWindowTitle('更新')
+        self.setWindowIcon(QIcon(img))
+        self.setFixedSize(331,141)
+        self.myv.setText(str_version)
+        self.newv.setText(new_version_num)
+        self.pushButton.clicked.connect(self.update)
+        self.pushButton_2.clicked.connect(self.Close)
+
+    def info(self):
+        self.myv.setText(str_version)
+        self.newv.setText(new_version_num)
+
+    def update(self):
+        webbrowser.open("https://hcteam.top/")
+    
+    def Close(self):
+        self.close()
 
 class MyMainForm(QMainWindow, Ui_Form):
     def __init__(self, parent=None):
         super(MyMainForm, self).__init__(parent)
+        self.setFixedSize(372,252)
         self.setupUi(self)
         self.setWindowTitle('登录')
+        self.setWindowIcon(QIcon(img))
         self.pushButton.clicked.connect(self.display)
         self.pushButton_2.clicked.connect(self.reg)
         self.lineEdit_2.setEchoMode(QLineEdit.Password)
@@ -46,55 +78,43 @@ class MyMainForm(QMainWindow, Ui_Form):
                 self.display()
         except:
             pass
+
+    def update(self):
+        if must_update == 1:
+            QMessageBox.warning(self,"警告","你的版本过低！\n最新版本是：{a}\n最低支持版本是：{c}\n你的版本是：{b}".format(a=new_version_num,c=max_version_num,b=str_version))
+            webbrowser.open("https://hcteam.top/")
+            sys.exit()
+        if can_update == 1:
+            self.update_gui = updateForm()
+            self.update_gui.info()
+            self.update_gui.show()
         
     def display(self):
         global username,password
 
-        username = self.lineEdit.text()
-        password = self.lineEdit_2.text()
+        username = self.lineEdit.text().strip()
+        password = self.lineEdit_2.text().strip()
         if len(username) == 0:
-            self.yonghu = MyMainError(error="请输入用户名！")
-            self.yonghu.show()
+            QMessageBox.warning(self,"警告","请输入用户名！",QMessageBox.Ok)
         if len(password) == 0:
-            self.mima = MyMainError(error="请输入密码！")
-            self.mima.show()
+            QMessageBox.warning(self,"警告","请输入密码！",QMessageBox.Ok)
         if len(username) == 0 or len(password) == 0:
             return
-        
-        try:
-            s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-            s.connect(('118.195.172.203',3000))
-        except:
-            pass
 
-        try:
-            s.sendall("loading".encode("GB2312"))
-            data = s.recv(1024).decode("GB2312")
-            if data == "off":
-                self.child_win = MyMainError(error="服务器不在线！")
-                s.close()
-                self.child_win.show()
-                return
-        except:
-            self.child_win = MyMainError(error="无法连接至服务器！")
-            s.close()
-            self.child_win.show()
+        s = command.connect()
+        if s == False:
+            QMessageBox.warning(self,"警告","无法连接至服务器！")
             return
 
-        d = DesEncrypt(password)
-        e = endes("5GTS&$#G",password)
-        print(d.decode("GB2312"),e.decode("GB2312"))
-        # s.sendall("login：{a}：{b}".format(a=username,b=d.decode("UTF-8")).encode("GB2312"))
         s.sendall("login_no_password：{a}：{b}".format(a=username,b=password).encode("GB2312"))
         
         global des_key
-        des_key = s.recv(1024).decode("GB2312").split("：")[-1]
-        print(des_key)
-        if des_key == "密码错误":
-            self.logerror = MyMainError(error="密码错误！")
-            s.close()
-            self.logerror.show()
+        des_key = s.recv(1024).decode("GB2312")
+
+        if command.command(self,des_key) == 0:
+            return
         else:
+            des_key = des_key.split("：")[-1]
             try:
                 self.close()
             except:
@@ -115,149 +135,112 @@ class MyMainForm(QMainWindow, Ui_Form):
 
     def reg(self):
         self.reg = MyMainReg()
+        self.close()
         self.reg.show()
 
     def close(self):
         return super().close()
 
-class MyMainError(QMainWindow, Ui_error):
-    def __init__(self, parent=None, error=""):
-        super(MyMainError, self).__init__(parent)
-        self.setupUi(self, error)
-        self.setWindowTitle('错误')
-
 class MyMainReg(QMainWindow, Ui_reg):
     def __init__(self, parent=None):
         super(MyMainReg, self).__init__(parent)
+        self.setFixedSize(401,300)
         self.setupUi(self)
         self.setWindowTitle('注册')
+        self.setWindowIcon(QIcon(img))
         self.pushButton.clicked.connect(self.display)
         self.lineEdit_2.setEchoMode(QLineEdit.Password)
 
     def display(self):
-        username = self.lineEdit.text()
-        password = self.lineEdit_2.text()
-        email = self.lineEdit_3.text()
+        username = self.lineEdit.text().strip()
+        password = self.lineEdit_2.text().strip()
+        email = self.lineEdit_3.text().strip()
 
-        if len(username) == 0:
-            self.yonghu = MyMainError(error="请输入用户名！")
-            self.yonghu.show()
-        if len(password) == 0:
-            self.mima = MyMainError(error="请输入密码！")
-            self.mima.show()
-        if len(email) == 0:
-            self.youxiang = MyMainError(error="请输入邮箱！")
-            self.youxiang.show()
         if len(username) == 0 or len(password) == 0 or len(email) == 0:
+            QMessageBox.warning(self,"警告","至少一个空没有输入！",QMessageBox.Ok)
             return
-
-        try:
-            s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-            s.connect(('118.195.172.203',3000))
-        except:
-            pass
-
-        try:
-            s.sendall("loading".encode("GB2312"))
-            data = s.recv(1024).decode("UTF-8")
-            if data == "off":
-                self.child_win = MyMainError(error="服务器不在线！")
-                s.close()
-                self.child_win.show()
+        
+        if email == "":
+            QMessageBox.warning(self,"警告","邮箱错误！",QMessageBox.Ok)
+            return
+        else:
+            try:
+                if email.split("@")[-1] == '':
+                    QMessageBox.warning(self,"警告","邮箱错误！",QMessageBox.Ok)
+                    return
+                elif email.split(".")[-1] == '':
+                    QMessageBox.warning(self,"警告","邮箱错误！",QMessageBox.Ok)
+                    return
+                elif email.split(".")[-2][-1] == '@':
+                    QMessageBox.warning(self,"警告","邮箱错误！",QMessageBox.Ok)
+                    return
+            except:
+                QMessageBox.warning(self,"警告","邮箱错误！",QMessageBox.Ok)
                 return
-        except:
-            self.child_win = MyMainError(error="无法连接至服务器！")
-            s.close()
-            self.child_win.show()
+
+        s = command.connect()
+        if s == False:
+            QMessageBox.warning(self,"警告","无法连接至服务器！")
             return
 
         s.sendall("Sign_up：{a}：{b}：{c}：{d}：{e}".format(a=username,b=password,c=email,d="pyforhc",e="win10").encode("GB2312"))
         global reg_id
         reg_id = s.recv(1024).decode("GB2312")
-        print(reg_id)
-        if reg_id == 'message：服务端发送错误：错误':
-            self.regerror = MyMainError(error="服务端发送错误！")
-            s.close()
-            self.regerror.show()
-        elif reg_id == "message：邮箱错误：错误":
-            self.regerror = MyMainError(error="邮箱错误！")
-            s.close()
-            self.regerror.show()
-        elif reg_id == "message：这个用户已经被注册了：错误":
-            self.regerror = MyMainError(error="这个用户已经被注册了！")
-            s.close()
-            self.regerror.show()
-        else:
-            self.ver = MyMainVer()
-            self.ver.show()
+
+        if command.command(self,reg_id) == 0:
+            return
+
+        self.ver = MyMainVer()
+        self.ver.show()
 
 class MyMainVer(QMainWindow, Ui_ver):
     def __init__(self, parent=None):
         super(MyMainVer, self).__init__(parent)
         self.setupUi(self)
         self.setWindowTitle('验证')
+        self.setWindowIcon(QIcon(img))
         self.pushButton.clicked.connect(self.display)
     
     def display(self):
         data = self.lineEdit.text()
         data2 = reg_id.split("：")[1]
         if data == data2:
-            self.msg = MyMainMsg(msg="验证成功！")
-            self.msg.show()
-
-class MyMainMsg(QMainWindow, Ui_msg):
-    def __init__(self, parent=None, msg=""):
-        super(MyMainMsg, self).__init__(parent)
-        self.setupUi(self,msg)
-        self.setWindowTitle('验证')
+            QMessageBox.information(self,"信息","验证成功！")
+            self.login = MyMainForm()
+            self.login.show()
+            self.close()
+        else:
+            QMessageBox.warning(self,"警告","验证失败，请重新输入")
 
 class MyMaindui(QMainWindow, Ui_duihuan):
     def __init__(self, parent=None):
         super(MyMaindui, self).__init__(parent)
+        self.setFixedSize(290,141)
         self.setupUi(self)
         self.setWindowTitle('兑换码系统')
+        self.setWindowIcon(QIcon(img))
         self.buttonBox.accepted.connect(self.ok)
         self.buttonBox.rejected.connect(self.nook)
 
     def ok(self):
-        duihuanma = self.lineEdit.text()
+        duihuanma = self.lineEdit.text().strip()
+        mima = self.lineEdit_2.text().strip()
+        if len(mima) == 0:
+            mima = 0
 
-        try:
-            s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-            s.connect(('118.195.172.203',3000))
-        except:
-            pass
-
-        try:
-            s.sendall("loading".encode("GB2312"))
-            data = s.recv(1024).decode("UTF-8")
-            if data == "off":
-                self.child_win = MyMainError(error="服务器不在线！")
-                s.close()
-                self.child_win.show()
-                return
-        except:
-            self.child_win = MyMainError(error="无法连接至服务器！")
-            s.close()
-            self.child_win.show()
+        s = command.connect()
+        if s == False:
+            QMessageBox.warning(self,"警告","无法连接至服务器！")
             return
 
-        d = endes("5GTS&$#G",password)
-        s.sendall("code：{}：{}：{}：{}".format(username,des_key,duihuanma,d).encode("GB2312"))
+        s.sendall("code：{}：{}：{}：{}".format(username,des_key,duihuanma,mima).encode("GB2312"))
         zhuang = s.recv(1024).decode("GB2312")
-        print(zhuang)
-        if zhuang.split("：")[0] == "code_on":
-            self.msg = MyMainMsg(msg="兑换成功！")
+        re = command.command(self,zhuang)
+        if re == 0:
+            return
+        elif re == 1:
+            QMessageBox.information(self,"信息","兑换成功！",QMessageBox.Ok)
             self.close()
-            self.msg.show()
-        elif zhuang == "message：兑换码不可用":
-            self.duierror = MyMainError(error="兑换码不可用！")
-            s.close()
-            self.duierror.show()
-        elif zhuang == "message：兑换码已被兑换完":
-            self.duierror = MyMainError(error="兑换码已被兑换完！")
-            s.close()
-            self.duierror.show()
     
     def nook(self):
         self.close()
@@ -267,15 +250,18 @@ class MyMainmain(QMainWindow, Ui_MainWindow):
         super(MyMainmain, self).__init__(parent)
         self.setupUi(self)
         self.setWindowTitle('pyforhc')
+        self.setWindowIcon(QIcon(img))
         self.shuaxin.clicked.connect(self.display)
         self.duihuan.clicked.connect(self.dui)
         self.actionexit.triggered.connect(self.exit)
         self.actionswitch_account.triggered.connect(self.switch_account)
+        self.set.setTitle("设置")
+        self.actionswitch_account.setText("切换账户")
+        self.actionexit.setText("退出")
 
     def switch_account(self):
         self.close()
 
-        # logdata = [False,False,"",""]
         try:
             with open("data.json","r") as f:
                 logdata = json.load(f)
@@ -286,32 +272,6 @@ class MyMainmain(QMainWindow, Ui_MainWindow):
             pass
 
         self.login = MyMainForm()
-
-        try:
-            s.close()
-        except:
-            pass
-
-        try:
-            s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-            s.connect(('118.195.172.203',3000))
-        except:
-            pass
-
-        try:
-            s.sendall("loading".encode("GB2312"))
-            data = s.recv(1024).decode("UTF-8")
-            if data == "off":
-                self.child_win = MyMainError(error="服务器不在线！")
-                s.close()
-                self.child_win.show()
-                return
-        except:
-            self.child_win = MyMainError(error="无法连接至服务器！")
-            s.close()
-            self.child_win.show()
-            return
-
         self.login.show()
 
     def exit(self):
@@ -320,28 +280,16 @@ class MyMainmain(QMainWindow, Ui_MainWindow):
     def display(self):
         self.username.setText(u"{}".format(username))
 
-        try:
-            s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-            s.connect(('118.195.172.203',3000))
-        except:
-            pass
-
-        try:
-            s.sendall("loading".encode("GB2312"))
-            data = s.recv(1024).decode("UTF-8")
-            if data == "off":
-                self.child_win = MyMainError(error="服务器不在线！")
-                s.close()
-                self.child_win.show()
-                return
-        except:
-            self.child_win = MyMainError(error="无法连接至服务器！")
-            s.close()
-            self.child_win.show()
+        s = command.connect()
+        if s == False:
+            QMessageBox.warning(self,"警告","无法连接至服务器！")
             return
         
         s.sendall("get_user_data：{a}：{b}".format(a=username,b=des_key).encode("GB2312"))
-        user_data = s.recv(1024).decode("GB2312").split("：")
+        user_data = s.recv(1024).decode("GB2312")
+        command.command(self,user_data)
+        
+        user_data = user_data.split("：")
         self.username.setText(user_data[-3])
         self.gold.setText(user_data[-2])
         self.dim.setText(user_data[-1])
@@ -363,4 +311,9 @@ if __name__ == '__main__':
         pass
     if ju:
         win.show()
+    key = command.rsa_key(100,1000)
+    public,private = key["public"],key["private"]
+    update_command()
+    win.update()
+
     sys.exit(app.exec_())
