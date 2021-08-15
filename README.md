@@ -2,11 +2,12 @@
 
 #### 介绍
 hcteam团队旗下的一个软件，此软件指的是客户端
+[官方网址](https://hcteam.top/)
 
 #### 安装教程
 
-1.  用pip安装 pip install -r requirements.txt
-2.  用python打开main.py即可使用
+1.  用pip安装[requirements.txt](requirements.txt) pip install -r requirements.txt
+2.  用python运行[main.py](main.py)即可使用
 
 #### 参与贡献
 
