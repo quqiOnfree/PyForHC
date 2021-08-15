@@ -1,0 +1,1 @@
+pyuic5 -o mainwin_2.py mainwin_2.ui

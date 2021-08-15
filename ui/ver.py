@@ -14,16 +14,55 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_ver(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(260, 130)
+        Form.resize(260, 161)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(Form.sizePolicy().hasHeightForWidth())
+        Form.setSizePolicy(sizePolicy)
+        Form.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
         self.lineEdit = QtWidgets.QLineEdit(Form)
-        self.lineEdit.setGeometry(QtCore.QRect(70, 30, 113, 20))
+        self.lineEdit.setGeometry(QtCore.QRect(100, 50, 113, 20))
+        self.lineEdit.setMaxLength(6)
+        self.lineEdit.setFrame(False)
+        self.lineEdit.setAlignment(QtCore.Qt.AlignCenter)
         self.lineEdit.setObjectName("lineEdit")
         self.label = QtWidgets.QLabel(Form)
-        self.label.setGeometry(QtCore.QRect(20, 30, 41, 21))
+        self.label.setGeometry(QtCore.QRect(40, 50, 41, 21))
         self.label.setObjectName("label")
         self.pushButton = QtWidgets.QPushButton(Form)
-        self.pushButton.setGeometry(QtCore.QRect(90, 70, 75, 23))
+        self.pushButton.setGeometry(QtCore.QRect(100, 100, 81, 21))
+        self.pushButton.setStyleSheet("QPushButton{\n"
+"    color:White;\n"
+"    border-radius: 10px;\n"
+"    font-family:微软雅黑;\n"
+"    background:#008B8B;\n"
+"    border:15px;\n"
+"}\n"
+"QPushButton:hover{\n"
+"    background:#00CED1;\n"
+"}\n"
+"QPushButton:pressed{\n"
+"    background:#00CED1;\n"
+"}")
         self.pushButton.setObjectName("pushButton")
+        self.label_2 = QtWidgets.QLabel(Form)
+        self.label_2.setGeometry(QtCore.QRect(10, 10, 241, 141))
+        self.label_2.setText("")
+        self.label_2.setPixmap(QtGui.QPixmap("./library/imgs/login_bg.png"))
+        self.label_2.setScaledContents(True)
+        self.label_2.setObjectName("label_2")
+        self.label_7 = QtWidgets.QLabel(Form)
+        self.label_7.setGeometry(QtCore.QRect(100, 60, 111, 16))
+        self.label_7.setFrameShape(QtWidgets.QFrame.HLine)
+        self.label_7.setText("")
+        self.label_7.setTextFormat(QtCore.Qt.PlainText)
+        self.label_7.setObjectName("label_7")
+        self.label_2.raise_()
+        self.lineEdit.raise_()
+        self.label.raise_()
+        self.pushButton.raise_()
+        self.label_7.raise_()
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
@@ -31,5 +70,6 @@ class Ui_ver(object):
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
+        self.lineEdit.setPlaceholderText(_translate("Form", "验证码"))
         self.label.setText(_translate("Form", "验证码"))
         self.pushButton.setText(_translate("Form", "确定"))
