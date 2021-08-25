@@ -5,6 +5,7 @@ import webbrowser
 import random
 import gc
 import time
+import ctypes
 
 from PyQt5 import sip
 from PyQt5.QtGui import QIcon, QFont, QPixmap
@@ -18,8 +19,9 @@ from ui import Ui_reg, Ui_update, Ui_ver, Ui_gamelist, Ui_announcement, Ui_Login
 def init():
     global open_receive, img, str_version, int_version, update, must_update, can_update, update_data, cant, cant_connect, public_msg, receive_msg, receive_msg_num, unreceive, unpublic, exe_name, s, public_msg_2, load_rsa_key, username, password, connect
     global official_address  # 官网地址变量
+    global comm_dll
     # 全局变量
-    open_receive = 1
+    open_receive = 0
     img = "./library/imgs/image.png"  # 软件图标
     exe_name = "氢冷HC"  # 软件名称
     official_address = "https://hcteam.top/"  # 官网地址变量
@@ -50,6 +52,7 @@ def init():
     unpublic = 0
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # 连接初始化
     # 程序初始化
+    comm_dll = ctypes.cdll.LoadLibrary("./library/dll/comm.dll")
 
 
 def dell():
@@ -75,6 +78,7 @@ def update_command():
     global update, new_version_num, max_version_num, can_update, must_update
 
     if update == 0:
+        global comm_dll
         s.sendall("edition".encode("GB2312"))
         version = receive_if()
         version2 = version.split("：")
@@ -84,12 +88,8 @@ def update_command():
         max_version_num = version2[4]
         can_update = 0
         must_update = 0
-        if max_version < int_version or new_version < int_version:
-            must_update = 2
-        elif max_version > int_version:
-            must_update = 1
-        if new_version > int_version:
-            can_update = 1
+        must_update = comm_dll.update_1(max_version,int_version,new_version)
+        can_update = comm_dll.update_2(max_version,int_version,new_version)
         update = 1
 
 
@@ -547,6 +547,7 @@ class MyMainReg(QWidget, Ui_reg):
         self.lineEdit_2.setEnabled(False)
         self.lineEdit_3.setEnabled(False)
         self.pushButton.setEnabled(False)
+        self.pushButton_2.setEnabled(False)
         self.ver.show()
 
     def mousePressEvent(self, event):
@@ -564,9 +565,7 @@ class MyMainReg(QWidget, Ui_reg):
         self.m_flag = False
 
     def Close(self):
-        self.close()
-        sip.delete(self)
-        command.gc_Close(self)
+        sys.exit()
 
     def login(self):
         global win
@@ -688,6 +687,7 @@ class MyMainmain(QMainWindow, Ui_tellroom_2):
 
     def show_data(self):
         global s
+
         s.sendall("get_user_data：{a}：{b}".format(
             a=username, b=des_key).encode("gb2312"))
         user_data = receive_if()

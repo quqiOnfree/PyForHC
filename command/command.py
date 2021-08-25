@@ -4,9 +4,26 @@ import time
 import keyboard
 import os
 import gc
+import multiprocessing
 
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import QThread, pyqtSignal
+
+
+def fast_sort(arr: list):
+    if len(arr) == 0:
+        return []
+    elif len(arr) == 1:
+        return arr
+    left = []
+    right = []
+    key = arr[0]
+    for i in range(1, len(arr)):
+        if arr[i] >= key:
+            right.append(arr[i])
+        if arr[i] < key:
+            left.append(arr[i])
+    return fast_sort(left) + [key] + fast_sort(right)
 
 
 def get_cwd():
@@ -44,43 +61,56 @@ def connect_3(yuming, port):
             socket.setdefaulttimeout(None)
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.connect(((yuming, port)))
+            start = time.time()
             s.sendall("loading".encode("GB2312"))
             s.recv(1024)
-            return s
+            end = time.time()
+            return s, end-start
         else:
-            return False
+            return False, False
     except:
         s.close()
-        return False
+        return False, False
+
+
+def connect_fast(addr: str, port: int):
+    global yanchi,yanchi2
+    s, yan = connect_3(addr, port)
+    yanchi2.append((s, yan))
+    if not yan == False:
+        yanchi.append(yan)
+    #     print(addr,round(yan*1000),"ms")
+    # if yan == False:
+    #     print(addr,False)
+
+
+def closes(yanchis, j):
+    for i in range(len(yanchis)):
+        if not i == j:
+            try:
+                yanchis[i][0].close()
+            except:
+                pass
 
 
 def connect_2(Port):
-    start1 = time.time()
-    s = connect_3("1cdnhcolda.com", Port)
-    end1 = time.time()
-    start2 = time.time()
-    s2 = connect_3("2cdn.hcolda.com", Port)
-    end2 = time.time()
+    global yanchi, yanchi2
+    yanchi = []
+    yanchi2 = []
 
-    if s == False:
-        s = connect_3("1cdn.hcolda.com", Port)
+    connect_fast("1cdn.hcolda.com", Port)
+    connect_fast("2cdn.hcolda.com", Port)
+    connect_fast("3cdn.hcolda.com", Port)
 
-    if s2 == False:
-        s2 = connect_3("2cdn.hcolda.com", Port)
+    sock = False
+    if not len(yanchi) == 0:
+        fast = fast_sort(yanchi)
+        for j in range(len(yanchi2)):
+            if fast[0] == yanchi2[j][1]:
+                sock = yanchi2[j][0]
+                multiprocessing.Process(target=closes, args=(yanchi2, j)).start()
 
-    if s == False and s2 == False:
-        return False
-    elif s == False:
-        return s2
-    elif s2 == False:
-        return s
-    else:
-        yan = end1-start1
-        yan2 = end2-start2
-        if yan >= yan2:
-            return s2
-        else:
-            return s
+    return sock
 
 
 def connect(Port):
@@ -91,7 +121,7 @@ def command(self, msg):
     lit = msg.split("：")
 
     if lit[0] == "tip":
-        QMessageBox.warning(self, "警告", lit[1], QMessageBox.Ok)
+        QMessageBox.critical(self, "警告", lit[1], QMessageBox.Ok)
         sys.exit()
 
     elif lit[0] == "message":
