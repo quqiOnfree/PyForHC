@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\Users\asd\Desktop\py\hc\wuyong\update.ui'
+# Form implementation generated from reading ui file 'update.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -25,10 +25,10 @@ class Ui_update(object):
         self.label_3.setGeometry(QtCore.QRect(90, 70, 71, 21))
         self.label_3.setObjectName("label_3")
         self.myv = QtWidgets.QLabel(Form)
-        self.myv.setGeometry(QtCore.QRect(170, 22, 101, 20))
+        self.myv.setGeometry(QtCore.QRect(170, 22, 161, 20))
         self.myv.setObjectName("myv")
         self.newv = QtWidgets.QLabel(Form)
-        self.newv.setGeometry(QtCore.QRect(170, 70, 101, 20))
+        self.newv.setGeometry(QtCore.QRect(170, 70, 161, 20))
         self.newv.setObjectName("newv")
         self.pushButton = QtWidgets.QPushButton(Form)
         self.pushButton.setGeometry(QtCore.QRect(70, 110, 75, 23))

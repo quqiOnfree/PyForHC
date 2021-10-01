@@ -66,19 +66,7 @@ class Ui_Login(object):
         font.setFamily("微软雅黑")
         font.setPointSize(10)
         self.pushButton.setFont(font)
-        self.pushButton.setStyleSheet("QPushButton{\n"
-"    color:White;\n"
-"    border-radius: 15px;\n"
-"    font-family:微软雅黑;\n"
-"    background:#008B8B;\n"
-"    border:15px;\n"
-"}\n"
-"QPushButton:hover{\n"
-"    background:#00CED1;\n"
-"}\n"
-"QPushButton:pressed{\n"
-"    background:#00CED1;\n"
-"}")
+        self.pushButton.setStyleSheet("")
         self.pushButton.setIconSize(QtCore.QSize(32, 32))
         self.pushButton.setCheckable(False)
         self.pushButton.setAutoRepeat(False)
@@ -90,19 +78,7 @@ class Ui_Login(object):
         font.setFamily("微软雅黑")
         font.setPointSize(10)
         self.pushButton_2.setFont(font)
-        self.pushButton_2.setStyleSheet("QPushButton{\n"
-"    color:White;\n"
-"    border-radius: 15px;\n"
-"    font-family:微软雅黑;\n"
-"    background:#008B8B;\n"
-"    border:15px;\n"
-"}\n"
-"QPushButton:hover{\n"
-"    background:#00CED1;\n"
-"}\n"
-"QPushButton:pressed{\n"
-"    background:#00CED1;\n"
-"}")
+        self.pushButton_2.setStyleSheet("")
         self.pushButton_2.setIconSize(QtCore.QSize(32, 32))
         self.pushButton_2.setObjectName("pushButton_2")
         self.bg = QtWidgets.QLabel(Login)

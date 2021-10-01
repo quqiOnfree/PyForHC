@@ -4,7 +4,6 @@ import time
 import keyboard
 import os
 import gc
-import multiprocessing
 
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import QThread, pyqtSignal
@@ -51,9 +50,9 @@ def gc_Close(self):
 
 def connect_3(yuming, port):
     socket.setdefaulttimeout(5)
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect(((yuming, port)))
+        s.connect((yuming, port))
         s.sendall("loading".encode("GB2312"))
         data = s.recv(1024).decode("gb2312")
         s.close()
@@ -76,7 +75,7 @@ def connect_3(yuming, port):
 def connect_fast(addr: str, port: int):
     global yanchi,yanchi2
     s, yan = connect_3(addr, port)
-    yanchi2.append((s, yan))
+    yanchi2.append([s, yan])
     if not yan == False:
         yanchi.append(yan)
     #     print(addr,round(yan*1000),"ms")
@@ -100,7 +99,7 @@ def connect_2(Port):
 
     connect_fast("1cdn.hcolda.com", Port)
     connect_fast("2cdn.hcolda.com", Port)
-    connect_fast("3cdn.hcolda.com", Port)
+    # connect_fast("3cdn.hcolda.com", Port)
 
     sock = False
     if not len(yanchi) == 0:
@@ -108,8 +107,8 @@ def connect_2(Port):
         for j in range(len(yanchi2)):
             if fast[0] == yanchi2[j][1]:
                 sock = yanchi2[j][0]
-                multiprocessing.Process(target=closes, args=(yanchi2, j)).start()
-
+                closes(yanchi2, j)
+                break
     return sock
 
 

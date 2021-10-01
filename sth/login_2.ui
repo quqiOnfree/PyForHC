@@ -32,7 +32,7 @@
     <string/>
    </property>
    <property name="pixmap">
-    <pixmap resource="../img/login/login.qrc">:/logsure.png</pixmap>
+    <pixmap resource="login/login.qrc">:/logsure.png</pixmap>
    </property>
    <property name="scaledContents">
     <bool>true</bool>
@@ -51,7 +51,7 @@
     <string/>
    </property>
    <property name="pixmap">
-    <pixmap resource="../img/login/login.qrc">:/user.png</pixmap>
+    <pixmap resource="login/login.qrc">:/user.png</pixmap>
    </property>
    <property name="scaledContents">
     <bool>true</bool>
@@ -176,19 +176,7 @@
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">QPushButton{
-    color:White;
-    border-radius: 15px;
-    font-family:微软雅黑;
-    background:#008B8B;
-    border:15px;
-}
-QPushButton:hover{
-    background:#00CED1;
-}
-QPushButton:pressed{
-    background:#00CED1;
-}</string>
+    <string notr="true"/>
    </property>
    <property name="text">
     <string>登录</string>
@@ -225,19 +213,7 @@ QPushButton:pressed{
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">QPushButton{
-    color:White;
-    border-radius: 15px;
-    font-family:微软雅黑;
-    background:#008B8B;
-    border:15px;
-}
-QPushButton:hover{
-    background:#00CED1;
-}
-QPushButton:pressed{
-    background:#00CED1;
-}</string>
+    <string notr="true"/>
    </property>
    <property name="text">
     <string>注册</string>
@@ -459,7 +435,8 @@ QPushButton:pressed{
   <zorder>label_4</zorder>
  </widget>
  <resources>
-  <include location="../img/login/login.qrc"/>
+  <include location="login/login.qrc"/>
+  <include location="login/login.qrc"/>
   <include location="../img/login/login.qrc"/>
  </resources>
  <connections/>
