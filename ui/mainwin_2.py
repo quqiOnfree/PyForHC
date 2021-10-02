@@ -310,6 +310,45 @@ class Ui_tellroom_2(object):
         self.pushButton_7.setObjectName("pushButton_7")
         self.textBrowser = QtWidgets.QTextBrowser(self.tab_2)
         self.textBrowser.setGeometry(QtCore.QRect(0, 0, 731, 271))
+        self.textBrowser.setStyleSheet("# QWidget{background:white;}  # 调整滚动条的背景颜色\n"
+"QScrollBar:vertical  # 竖直滚动条，水平滚动条用horizontal，vertical、horizontal都不加则表示所有滚动条\n"
+"{\n"
+"    border-radius:7px;  # 滚动条的滑轨的圆角\n"
+"    background:blue;  # 滚动条的滑轨的背景颜色\n"
+"    padding-top:14px;  # 滚动条上部增加padding\n"
+"    padding-bottom:14px;  # 同理\n"
+"}\n"
+"QScrollBar::handle:vertical\n"
+"{\n"
+"    background:darkgray;  # 滚动条颜色\n"
+"    border-radius:6px;  # 滚动条圆角\n"
+"    margin-left:2px;  # 滚动条和滑轨之间的左间隙\n"
+"    margin-right:2px;  # 同理\n"
+"}\n"
+"QScrollBar::handle:vertical:hover  # 鼠标放上滑块滑块变色\n"
+"{\n"
+"    background:gray;\n"
+"    border-radius:6px;\n"
+"}\n"
+"QScrollBar::sub-line:vertical  # 上方箭头\n"
+"{\n"
+"    height:14px;width:8px;\n"
+"    image:url(\'\');  # 这里设置为空，方便和下箭头对比\n"
+"}\n"
+"QScrollBar::sub-line:vertical:hover  # 鼠标放到上箭头箭头变成其他图片\n"
+"{\n"
+"    height:14px;width:8px;\n"
+"    image:url(\'\');  # 这里设置为空，方便和下箭头对比\n"
+"    subcontrol-position:top;\n"
+"}\n"
+"QScrollBar::add-page:vertical  # 滑块已经经过的滑轨区域的颜色，若没有这里的设置，该区域会呈现网格状，不美观\n"
+"{\n"
+"    background:green;\n"
+"}\n"
+"QScrollBar::sub-page:vertical  #  滑块还没经过的滑轨区域的颜色，若没有这里的设置，该区域会呈现网格状，不美观\n"
+"{\n"
+"    background:red; \n"
+"}")
         self.textBrowser.setObjectName("textBrowser")
         self.label_12 = QtWidgets.QLabel(self.tab_2)
         self.label_12.setGeometry(QtCore.QRect(-10, -10, 751, 501))
@@ -638,10 +677,431 @@ class Ui_tellroom_2(object):
         self.tabWidget.addTab(self.tab_4, "")
         self.tab_5 = QtWidgets.QWidget()
         self.tab_5.setObjectName("tab_5")
+        self.pushButton_10 = QtWidgets.QPushButton(self.tab_5)
+        self.pushButton_10.setGeometry(QtCore.QRect(90, 10, 71, 23))
+        self.pushButton_10.setStyleSheet("QPushButton{\n"
+"    color:White;\n"
+"    border-radius: 11px;\n"
+"    font-family:宋体;\n"
+"    background:#008B8B;\n"
+"    border:11px;\n"
+"}\n"
+"QPushButton:hover{\n"
+"    background:#00CED1;\n"
+"}\n"
+"QPushButton:pressed{\n"
+"    background:#00CED1;\n"
+"}")
+        self.pushButton_10.setObjectName("pushButton_10")
+        self.listView = QtWidgets.QListView(self.tab_5)
+        self.listView.setGeometry(QtCore.QRect(0, 40, 161, 441))
+        self.listView.setObjectName("listView")
+        self.tabWidget_2 = QtWidgets.QTabWidget(self.tab_5)
+        self.tabWidget_2.setGeometry(QtCore.QRect(160, -20, 581, 511))
+        self.tabWidget_2.setObjectName("tabWidget_2")
+        self.tab_9 = QtWidgets.QWidget()
+        self.tab_9.setStyleSheet("background:#FFFFFF;")
+        self.tab_9.setObjectName("tab_9")
+        self.gridLayoutWidget_3 = QtWidgets.QWidget(self.tab_9)
+        self.gridLayoutWidget_3.setGeometry(QtCore.QRect(0, 0, 571, 481))
+        self.gridLayoutWidget_3.setObjectName("gridLayoutWidget_3")
+        self.gridLayout_3 = QtWidgets.QGridLayout(self.gridLayoutWidget_3)
+        self.gridLayout_3.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout_3.setObjectName("gridLayout_3")
+        spacerItem7 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.gridLayout_3.addItem(spacerItem7, 0, 1, 1, 1)
+        spacerItem8 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout_3.addItem(spacerItem8, 1, 2, 1, 1)
+        spacerItem9 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout_3.addItem(spacerItem9, 1, 0, 1, 1)
+        spacerItem10 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.gridLayout_3.addItem(spacerItem10, 2, 1, 1, 1)
+        self.groupBox_2 = QtWidgets.QGroupBox(self.gridLayoutWidget_3)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.groupBox_2.sizePolicy().hasHeightForWidth())
+        self.groupBox_2.setSizePolicy(sizePolicy)
+        self.groupBox_2.setMinimumSize(QtCore.QSize(190, 200))
+        self.groupBox_2.setMaximumSize(QtCore.QSize(190, 200))
+        self.groupBox_2.setTitle("")
+        self.groupBox_2.setAlignment(QtCore.Qt.AlignCenter)
+        self.groupBox_2.setObjectName("groupBox_2")
+        self.label_56 = QtWidgets.QLabel(self.groupBox_2)
+        self.label_56.setGeometry(QtCore.QRect(60, 20, 70, 70))
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_56.sizePolicy().hasHeightForWidth())
+        self.label_56.setSizePolicy(sizePolicy)
+        self.label_56.setMinimumSize(QtCore.QSize(70, 70))
+        self.label_56.setMaximumSize(QtCore.QSize(70, 70))
+        self.label_56.setText("")
+        self.label_56.setPixmap(QtGui.QPixmap("../library/imgs/image.png"))
+        self.label_56.setScaledContents(True)
+        self.label_56.setObjectName("label_56")
+        self.label_57 = QtWidgets.QLabel(self.groupBox_2)
+        self.label_57.setGeometry(QtCore.QRect(10, 90, 171, 101))
+        self.label_57.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_57.setObjectName("label_57")
+        self.gridLayout_3.addWidget(self.groupBox_2, 1, 1, 1, 1)
+        self.tabWidget_2.addTab(self.tab_9, "")
+        self.tab_10 = QtWidgets.QWidget()
+        self.tab_10.setObjectName("tab_10")
+        self.textEdit_2 = QtWidgets.QTextEdit(self.tab_10)
+        self.textEdit_2.setGeometry(QtCore.QRect(0, 310, 571, 121))
+        self.textEdit_2.setObjectName("textEdit_2")
+        self.label_58 = QtWidgets.QLabel(self.tab_10)
+        self.label_58.setGeometry(QtCore.QRect(-180, -20, 751, 501))
+        self.label_58.setStyleSheet("background:#FFFFFF")
+        self.label_58.setText("")
+        self.label_58.setObjectName("label_58")
+        self.pushButton_19 = QtWidgets.QPushButton(self.tab_10)
+        self.pushButton_19.setGeometry(QtCore.QRect(450, 440, 111, 31))
+        font = QtGui.QFont()
+        font.setFamily("宋体")
+        font.setPointSize(11)
+        self.pushButton_19.setFont(font)
+        self.pushButton_19.setStyleSheet("QPushButton{\n"
+"    color:White;\n"
+"    border-radius: 10px;\n"
+"    background:#008B8B;\n"
+"    border:15px;\n"
+"}\n"
+"QPushButton:hover{\n"
+"    background:#00CED1;\n"
+"}\n"
+"QPushButton:pressed{\n"
+"    background:#00CED1;\n"
+"}")
+        self.pushButton_19.setObjectName("pushButton_19")
+        self.textBrowser_2 = QtWidgets.QTextBrowser(self.tab_10)
+        self.textBrowser_2.setGeometry(QtCore.QRect(0, 40, 571, 261))
+        self.textBrowser_2.setStyleSheet("# QWidget{background:white;}  # 调整滚动条的背景颜色\n"
+"QScrollBar:vertical  # 竖直滚动条，水平滚动条用horizontal，vertical、horizontal都不加则表示所有滚动条\n"
+"{\n"
+"    border-radius:7px;  # 滚动条的滑轨的圆角\n"
+"    background:blue;  # 滚动条的滑轨的背景颜色\n"
+"    padding-top:14px;  # 滚动条上部增加padding\n"
+"    padding-bottom:14px;  # 同理\n"
+"}\n"
+"QScrollBar::handle:vertical\n"
+"{\n"
+"    background:darkgray;  # 滚动条颜色\n"
+"    border-radius:6px;  # 滚动条圆角\n"
+"    margin-left:2px;  # 滚动条和滑轨之间的左间隙\n"
+"    margin-right:2px;  # 同理\n"
+"}\n"
+"QScrollBar::handle:vertical:hover  # 鼠标放上滑块滑块变色\n"
+"{\n"
+"    background:gray;\n"
+"    border-radius:6px;\n"
+"}\n"
+"QScrollBar::sub-line:vertical  # 上方箭头\n"
+"{\n"
+"    height:14px;width:8px;\n"
+"    image:url(\'\');  # 这里设置为空，方便和下箭头对比\n"
+"}\n"
+"QScrollBar::sub-line:vertical:hover  # 鼠标放到上箭头箭头变成其他图片\n"
+"{\n"
+"    height:14px;width:8px;\n"
+"    image:url(\'\');  # 这里设置为空，方便和下箭头对比\n"
+"    subcontrol-position:top;\n"
+"}\n"
+"QScrollBar::add-page:vertical  # 滑块已经经过的滑轨区域的颜色，若没有这里的设置，该区域会呈现网格状，不美观\n"
+"{\n"
+"    background:green;\n"
+"}\n"
+"QScrollBar::sub-page:vertical  #  滑块还没经过的滑轨区域的颜色，若没有这里的设置，该区域会呈现网格状，不美观\n"
+"{\n"
+"    background:red; \n"
+"}")
+        self.textBrowser_2.setObjectName("textBrowser_2")
+        self.label_60 = QtWidgets.QLabel(self.tab_10)
+        self.label_60.setGeometry(QtCore.QRect(330, 440, 111, 31))
+        self.label_60.setObjectName("label_60")
+        self.label_59 = QtWidgets.QLabel(self.tab_10)
+        self.label_59.setGeometry(QtCore.QRect(20, 1, 271, 41))
+        font = QtGui.QFont()
+        font.setPointSize(13)
+        self.label_59.setFont(font)
+        self.label_59.setObjectName("label_59")
+        self.label_58.raise_()
+        self.textEdit_2.raise_()
+        self.pushButton_19.raise_()
+        self.textBrowser_2.raise_()
+        self.label_60.raise_()
+        self.label_59.raise_()
+        self.tabWidget_2.addTab(self.tab_10, "")
         self.tabWidget.addTab(self.tab_5, "")
         self.tab_6 = QtWidgets.QWidget()
         self.tab_6.setObjectName("tab_6")
+        self.pushButton_12 = QtWidgets.QPushButton(self.tab_6)
+        self.pushButton_12.setGeometry(QtCore.QRect(650, 450, 75, 31))
+        self.pushButton_12.setStyleSheet("QPushButton{\n"
+"    color:White;\n"
+"    border-radius: 15px;\n"
+"    font-family:宋体;\n"
+"    background:#008B8B;\n"
+"    border:15px;\n"
+"}\n"
+"QPushButton:hover{\n"
+"    background:#00CED1;\n"
+"}\n"
+"QPushButton:pressed{\n"
+"    background:#00CED1;\n"
+"}")
+        self.pushButton_12.setObjectName("pushButton_12")
+        self.scrollArea_2 = QtWidgets.QScrollArea(self.tab_6)
+        self.scrollArea_2.setGeometry(QtCore.QRect(0, 0, 741, 451))
+        self.scrollArea_2.setWidgetResizable(True)
+        self.scrollArea_2.setObjectName("scrollArea_2")
+        self.scrollAreaWidgetContents_2 = QtWidgets.QWidget()
+        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 739, 449))
+        self.scrollAreaWidgetContents_2.setObjectName("scrollAreaWidgetContents_2")
+        self.label_43 = QtWidgets.QLabel(self.scrollAreaWidgetContents_2)
+        self.label_43.setGeometry(QtCore.QRect(170, 20, 101, 31))
+        self.label_43.setObjectName("label_43")
+        self.comboBox = QtWidgets.QComboBox(self.scrollAreaWidgetContents_2)
+        self.comboBox.setGeometry(QtCore.QRect(300, 20, 151, 31))
+        self.comboBox.setStyleSheet("QPushButton{\n"
+"    color:White;\n"
+"    border-radius: 15px;\n"
+"    font-family:宋体;\n"
+"    background:#008B8B;\n"
+"    border:15px;\n"
+"}\n"
+"QPushButton:hover{\n"
+"    background:#00CED1;\n"
+"}\n"
+"QPushButton:pressed{\n"
+"    background:#00CED1;\n"
+"}")
+        self.comboBox.setObjectName("comboBox")
+        self.comboBox.addItem("")
+        self.comboBox.addItem("")
+        self.comboBox.addItem("")
+        self.comboBox.addItem("")
+        self.pushButton_11 = QtWidgets.QPushButton(self.scrollAreaWidgetContents_2)
+        self.pushButton_11.setGeometry(QtCore.QRect(300, 220, 75, 31))
+        self.pushButton_11.setStyleSheet("QPushButton{\n"
+"    color:White;\n"
+"    border-radius: 15px;\n"
+"    font-family:宋体;\n"
+"    background:#008B8B;\n"
+"    border:15px;\n"
+"}\n"
+"QPushButton:hover{\n"
+"    background:#00CED1;\n"
+"}\n"
+"QPushButton:pressed{\n"
+"    background:#00CED1;\n"
+"}")
+        self.pushButton_11.setObjectName("pushButton_11")
+        self.pushButton_14 = QtWidgets.QPushButton(self.scrollAreaWidgetContents_2)
+        self.pushButton_14.setGeometry(QtCore.QRect(300, 170, 111, 31))
+        self.pushButton_14.setStyleSheet("QPushButton{\n"
+"    color:White;\n"
+"    border-radius: 15px;\n"
+"    font-family:宋体;\n"
+"    background:#008B8B;\n"
+"    border:15px;\n"
+"}\n"
+"QPushButton:hover{\n"
+"    background:#00CED1;\n"
+"}\n"
+"QPushButton:pressed{\n"
+"    background:#00CED1;\n"
+"}")
+        self.pushButton_14.setObjectName("pushButton_14")
+        self.label_44 = QtWidgets.QLabel(self.scrollAreaWidgetContents_2)
+        self.label_44.setGeometry(QtCore.QRect(170, 170, 101, 31))
+        self.label_44.setObjectName("label_44")
+        self.label_45 = QtWidgets.QLabel(self.scrollAreaWidgetContents_2)
+        self.label_45.setGeometry(QtCore.QRect(170, 90, 101, 31))
+        self.label_45.setObjectName("label_45")
+        self.pushButton_15 = QtWidgets.QPushButton(self.scrollAreaWidgetContents_2)
+        self.pushButton_15.setGeometry(QtCore.QRect(300, 90, 81, 31))
+        self.pushButton_15.setStyleSheet("QPushButton{\n"
+"    color:White;\n"
+"    border-radius: 15px;\n"
+"    font-family:宋体;\n"
+"    background:#008B8B;\n"
+"    border:15px;\n"
+"}\n"
+"QPushButton:hover{\n"
+"    background:#00CED1;\n"
+"}\n"
+"QPushButton:pressed{\n"
+"    background:#00CED1;\n"
+"}")
+        self.pushButton_15.setObjectName("pushButton_15")
+        self.pushButton_16 = QtWidgets.QPushButton(self.scrollAreaWidgetContents_2)
+        self.pushButton_16.setGeometry(QtCore.QRect(390, 90, 61, 31))
+        self.pushButton_16.setStyleSheet("QPushButton{\n"
+"    color:White;\n"
+"    border-radius: 15px;\n"
+"    font-family:宋体;\n"
+"    background:#008B8B;\n"
+"    border:15px;\n"
+"}\n"
+"QPushButton:hover{\n"
+"    background:#00CED1;\n"
+"}\n"
+"QPushButton:pressed{\n"
+"    background:#00CED1;\n"
+"}")
+        self.pushButton_16.setObjectName("pushButton_16")
+        self.label_53 = QtWidgets.QLabel(self.scrollAreaWidgetContents_2)
+        self.label_53.setGeometry(QtCore.QRect(-10, -10, 751, 501))
+        self.label_53.setStyleSheet("background:#FFFFFF")
+        self.label_53.setText("")
+        self.label_53.setObjectName("label_53")
+        self.pushButton_18 = QtWidgets.QPushButton(self.scrollAreaWidgetContents_2)
+        self.pushButton_18.setGeometry(QtCore.QRect(380, 220, 71, 31))
+        self.pushButton_18.setStyleSheet("QPushButton{\n"
+"    color:White;\n"
+"    border-radius: 15px;\n"
+"    font-family:宋体;\n"
+"    background:#008B8B;\n"
+"    border:15px;\n"
+"}\n"
+"QPushButton:hover{\n"
+"    background:#00CED1;\n"
+"}\n"
+"QPushButton:pressed{\n"
+"    background:#00CED1;\n"
+"}")
+        self.pushButton_18.setObjectName("pushButton_18")
+        self.label_55 = QtWidgets.QLabel(self.scrollAreaWidgetContents_2)
+        self.label_55.setGeometry(QtCore.QRect(460, 220, 131, 31))
+        self.label_55.setObjectName("label_55")
+        self.label_53.raise_()
+        self.label_43.raise_()
+        self.comboBox.raise_()
+        self.pushButton_11.raise_()
+        self.pushButton_14.raise_()
+        self.label_44.raise_()
+        self.label_45.raise_()
+        self.pushButton_15.raise_()
+        self.pushButton_16.raise_()
+        self.pushButton_18.raise_()
+        self.label_55.raise_()
+        self.scrollArea_2.setWidget(self.scrollAreaWidgetContents_2)
+        self.label_54 = QtWidgets.QLabel(self.tab_6)
+        self.label_54.setGeometry(QtCore.QRect(-10, 440, 751, 501))
+        self.label_54.setStyleSheet("background:#FFFFFF")
+        self.label_54.setText("")
+        self.label_54.setObjectName("label_54")
+        self.label_54.raise_()
+        self.pushButton_12.raise_()
+        self.scrollArea_2.raise_()
         self.tabWidget.addTab(self.tab_6, "")
+        self.tab_7 = QtWidgets.QWidget()
+        self.tab_7.setObjectName("tab_7")
+        self.lineEdit = QtWidgets.QLineEdit(self.tab_7)
+        self.lineEdit.setGeometry(QtCore.QRect(100, 10, 471, 41))
+        self.lineEdit.setStyleSheet("color:rgb(0,0,0);\n"
+"border-radius: 15px;\n"
+"background:#F0F0F0;\n"
+"border:15px;")
+        self.lineEdit.setText("")
+        self.lineEdit.setObjectName("lineEdit")
+        self.pushButton_13 = QtWidgets.QPushButton(self.tab_7)
+        self.pushButton_13.setGeometry(QtCore.QRect(590, 10, 91, 41))
+        font = QtGui.QFont()
+        font.setFamily("宋体")
+        font.setPointSize(11)
+        self.pushButton_13.setFont(font)
+        self.pushButton_13.setStyleSheet("QPushButton{\n"
+"    color:White;\n"
+"    border-radius: 20px;\n"
+"    font-family:宋体;\n"
+"    background:#008B8B;\n"
+"    border:20px;\n"
+"}\n"
+"QPushButton:hover{\n"
+"    background:#00CED1;\n"
+"}\n"
+"QPushButton:pressed{\n"
+"    background:#00CED1;\n"
+"}")
+        self.pushButton_13.setObjectName("pushButton_13")
+        self.label_46 = QtWidgets.QLabel(self.tab_7)
+        self.label_46.setGeometry(QtCore.QRect(-10, 0, 751, 501))
+        self.label_46.setStyleSheet("background:#FFFFFF")
+        self.label_46.setText("")
+        self.label_46.setObjectName("label_46")
+        self.label_47 = QtWidgets.QLabel(self.tab_7)
+        self.label_47.setGeometry(QtCore.QRect(100, 180, 121, 41))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.label_47.setFont(font)
+        self.label_47.setObjectName("label_47")
+        self.label_48 = QtWidgets.QLabel(self.tab_7)
+        self.label_48.setGeometry(QtCore.QRect(250, 180, 341, 41))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.label_48.setFont(font)
+        self.label_48.setObjectName("label_48")
+        self.label_49 = QtWidgets.QLabel(self.tab_7)
+        self.label_49.setGeometry(QtCore.QRect(250, 130, 341, 41))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.label_49.setFont(font)
+        self.label_49.setObjectName("label_49")
+        self.label_50 = QtWidgets.QLabel(self.tab_7)
+        self.label_50.setGeometry(QtCore.QRect(100, 130, 121, 41))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.label_50.setFont(font)
+        self.label_50.setObjectName("label_50")
+        self.label_51 = QtWidgets.QLabel(self.tab_7)
+        self.label_51.setGeometry(QtCore.QRect(250, 80, 121, 41))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.label_51.setFont(font)
+        self.label_51.setObjectName("label_51")
+        self.label_52 = QtWidgets.QLabel(self.tab_7)
+        self.label_52.setGeometry(QtCore.QRect(100, 80, 121, 41))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.label_52.setFont(font)
+        self.label_52.setObjectName("label_52")
+        self.pushButton_17 = QtWidgets.QPushButton(self.tab_7)
+        self.pushButton_17.setGeometry(QtCore.QRect(590, 230, 91, 41))
+        font = QtGui.QFont()
+        font.setFamily("宋体")
+        font.setPointSize(11)
+        self.pushButton_17.setFont(font)
+        self.pushButton_17.setStyleSheet("QPushButton{\n"
+"    color:White;\n"
+"    border-radius: 20px;\n"
+"    font-family:宋体;\n"
+"    background:#008B8B;\n"
+"    border:20px;\n"
+"}\n"
+"QPushButton:hover{\n"
+"    background:#00CED1;\n"
+"}\n"
+"QPushButton:pressed{\n"
+"    background:#00CED1;\n"
+"}")
+        self.pushButton_17.setObjectName("pushButton_17")
+        self.label_46.raise_()
+        self.lineEdit.raise_()
+        self.pushButton_13.raise_()
+        self.label_47.raise_()
+        self.label_48.raise_()
+        self.label_49.raise_()
+        self.label_50.raise_()
+        self.label_51.raise_()
+        self.label_52.raise_()
+        self.pushButton_17.raise_()
+        self.tabWidget.addTab(self.tab_7, "")
+        self.tab_8 = QtWidgets.QWidget()
+        self.tab_8.setObjectName("tab_8")
+        self.tabWidget.addTab(self.tab_8, "")
         self.label_3 = QtWidgets.QLabel(self.centralwidget)
         self.label_3.setGeometry(QtCore.QRect(90, 30, 741, 31))
         self.label_3.setStyleSheet("background:#FFFFFF")
@@ -671,7 +1131,7 @@ class Ui_tellroom_2(object):
         tellroom_2.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(tellroom_2)
-        self.tabWidget.setCurrentIndex(3)
+        self.tabWidget.setCurrentIndex(4)
         QtCore.QMetaObject.connectSlotsByName(tellroom_2)
 
     def retranslateUi(self, tellroom_2):
@@ -722,6 +1182,42 @@ class Ui_tellroom_2(object):
         self.label_41.setText(_translate("tellroom_2", "微信"))
         self.label_42.setText(_translate("tellroom_2", "TextLabel"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_4), _translate("tellroom_2", "页"))
+        self.pushButton_10.setText(_translate("tellroom_2", "添加好友"))
+        self.label_57.setText(_translate("tellroom_2", "@氢冷团队2021\n"
+"\n"
+"曲奇Onfree\n"
+"皓\n"
+"ad973\n"
+"Lovely简世"))
+        self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.tab_9), _translate("tellroom_2", "Tab 1"))
+        self.pushButton_19.setText(_translate("tellroom_2", "发送"))
+        self.label_60.setText(_translate("tellroom_2", "(ctrl+enter 发送)"))
+        self.label_59.setText(_translate("tellroom_2", "名字"))
+        self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.tab_10), _translate("tellroom_2", "Tab 2"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_5), _translate("tellroom_2", "页"))
+        self.pushButton_12.setText(_translate("tellroom_2", "重置"))
+        self.label_43.setText(_translate("tellroom_2", "更改字体"))
+        self.comboBox.setItemText(0, _translate("tellroom_2", "默认"))
+        self.comboBox.setItemText(1, _translate("tellroom_2", "高端黑"))
+        self.comboBox.setItemText(2, _translate("tellroom_2", "快乐体"))
+        self.comboBox.setItemText(3, _translate("tellroom_2", "文艺体"))
+        self.pushButton_11.setText(_translate("tellroom_2", "检查更新"))
+        self.pushButton_14.setText(_translate("tellroom_2", "打开软件文件夹"))
+        self.label_44.setText(_translate("tellroom_2", "更多设置"))
+        self.label_45.setText(_translate("tellroom_2", "用户设置"))
+        self.pushButton_15.setText(_translate("tellroom_2", "切换用户"))
+        self.pushButton_16.setText(_translate("tellroom_2", "注销"))
+        self.pushButton_18.setText(_translate("tellroom_2", "更新"))
+        self.label_55.setText(_translate("tellroom_2", "您已是最新版！"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_6), _translate("tellroom_2", "页"))
+        self.pushButton_13.setText(_translate("tellroom_2", "搜索"))
+        self.label_47.setText(_translate("tellroom_2", "搜索到的id为："))
+        self.label_48.setText(_translate("tellroom_2", "xx"))
+        self.label_49.setText(_translate("tellroom_2", "xx"))
+        self.label_50.setText(_translate("tellroom_2", "用户："))
+        self.label_51.setText(_translate("tellroom_2", "搜到/未搜到"))
+        self.label_52.setText(_translate("tellroom_2", "搜索结果："))
+        self.pushButton_17.setText(_translate("tellroom_2", "添加"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_7), _translate("tellroom_2", "页"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_8), _translate("tellroom_2", "页"))
         self.label.setText(_translate("tellroom_2", "氢聊"))

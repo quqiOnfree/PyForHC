@@ -7,11 +7,12 @@ import gc
 import time
 import ctypes
 import os
+import json5
 
 from PyQt5 import sip
 from PyQt5.QtGui import QIcon, QFont, QPixmap, QFontDatabase
-from PyQt5.QtWidgets import QApplication, QLineEdit, QMainWindow, QMessageBox, QWidget, QFontComboBox, QSystemTrayIcon, QAction, QMenu
-from PyQt5.QtCore import QThread, Qt, pyqtSignal
+from PyQt5.QtWidgets import QApplication, QLineEdit, QMainWindow, QMessageBox, QWidget, QFontComboBox, QSystemTrayIcon, QAction, QMenu, QListView
+from PyQt5.QtCore import QThread, Qt, pyqtSignal, QAbstractListModel, QVariant, QSize, QRect
 
 import command
 from ui import Ui_reg, Ui_update, Ui_ver, Ui_announcement, Ui_Login, Ui_tellroom_2
@@ -22,6 +23,7 @@ def init():
     global official_address  # 官网地址变量
     global comm_dll
     global __version__
+    global chat_msg
     # 全局变量
     open_receive = 0
     img = "./library/imgs/image.png"  # 软件图标
@@ -47,6 +49,7 @@ def init():
     cant = 0
     cant_connect = 0
 
+    chat_msgs = {}
     public_msg = []
     public_msg_2 = ""
     receive_msg = []
@@ -173,6 +176,10 @@ class receive(QThread):
                 if not len(data):
                     break
                 if command.msg_command(data) == 0:
+                    lit = data.split("：")
+                    if lit[0] == "chatting_server":  # 以后需要更改
+                        pass
+
                     receive_msg.append(data)
                     receive_msg_num = len(receive_msg)-1
                     unreceive = 1
@@ -635,6 +642,96 @@ class MyMainVer(QWidget, Ui_ver):
         command.gc_Close(self)
 
 
+class friend_model(QAbstractListModel):
+    def __init__(self):
+        super().__init__()
+        self.ListItemData = []
+
+    def data(self, index, role):
+        if index.isValid() or (0 <= index.row() < len(self.ListItemData)):
+            if role == Qt.DisplayRole:  # 名字
+                return QVariant(self.ListItemData[index.row()]['name'])
+            elif role == Qt.DecorationRole:  # 图像
+                return QVariant(QIcon(self.ListItemData[index.row()]['icon_path']))
+            elif role == Qt.SizeHintRole:
+                return QVariant(QSize(70, 50))
+            elif role == Qt.TextAlignmentRole:  # 宽高
+                return QVariant(int(Qt.AlignHCenter | Qt.AlignVCenter))
+            elif role == Qt.FontRole:  # 字体
+                font = QFont()
+                font.setPixelSize(15)
+                font.setFamily('./library/ttfs/高端黑.ttf')
+                return QVariant(font)
+
+    def rowCount(self, index):
+        return len(self.ListItemData)
+
+    def data_init(self, name, icon_path):
+        item_data = {}
+        item_data["name"] = name
+        item_data["icon_path"] = icon_path
+        self.ListItemData.append(item_data)
+
+    def deleteItem(self, index):
+        del self.ListItemData[index]
+
+    def getItem(self, index):
+        if index > -1 and index < len(self.ListItemData):
+            return self.ListItemData[index]
+
+
+class ListView(QListView):
+    left_clicked = pyqtSignal(int)
+    right_clicked = pyqtSignal()
+
+    def __init__(self, tab):
+        super().__init__(tab)
+        self.friend_model = friend_model()
+
+    def contextMenuEvent(self, e):
+        hitIndex = self.indexAt(e.pos()).column()
+        if hitIndex > -1:
+            pmenu = QMenu(self)
+            pDeleteAct = QAction("删除", pmenu)
+            pmenu.addAction(pDeleteAct)
+            pDeleteAct.triggered.connect(self.deleteItemSlot)
+            pmenu.popup(self.mapToGlobal(e.pos()))
+
+    def deleteItemSlot(self):
+        index = self.currentIndex().row()
+        if index > -1:
+            friend = self.friend_model.getItem(index)
+            name = friend['name']
+            s.sendall("get_id：".encode('gb2312')+name.encode("gb2312"))
+            msg = receive_if()
+            command.command(self, msg)
+            msg = msg.split("：")
+            if msg[0] == "get_id_ok":
+                name_id = msg[1]
+            else:
+                QMessageBox.information(self, '信息', '删除好友失败')
+                return
+            s.sendall("del_friends：{a}：{b}：{c}：{d}".format(
+                a=username, b=des_key, c=name_id, d=name).encode('gb2312'))
+            msg = receive_if()
+            command.command(self, msg)
+            msg = msg.split('：')
+            if msg[1] == "删除成功":
+                self.friend_model.deleteItem(index)
+                self.right_clicked.emit()
+
+    def mousePressEvent(self, e):
+        if e.buttons() == Qt.LeftButton:
+            hitIndex = self.indexAt(e.pos()).column()
+            if hitIndex > -1:
+                self.left_clicked.emit(hitIndex)
+
+    def mouseDoubleClickEvent(self, e):
+        hitIndex = self.indexAt(e.pos()).column()
+        if hitIndex > -1:
+            self.left_clicked.emit(hitIndex)
+
+
 class MyMainmain(QMainWindow, Ui_tellroom_2):
     def __init__(self):
         super().__init__()
@@ -645,7 +742,9 @@ class MyMainmain(QMainWindow, Ui_tellroom_2):
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.label_2.setPixmap(QPixmap("./library/imgs/main/bg.png"))
         self.label_6.setPixmap(QPixmap("./library/imgs/image.png"))
+        self.label_56.setPixmap(QPixmap("./library/imgs/image.png"))
         self.tabWidget.setCurrentWidget(self.tab)
+        self.tabWidget_2.setCurrentWidget(self.tab_9)
         self.pushButton_4.clicked.connect(self.close)
         self.pushButton_5.clicked.connect(self.zui_xiao_hua)
         self.pushButton.clicked.connect(self.page1)
@@ -660,6 +759,30 @@ class MyMainmain(QMainWindow, Ui_tellroom_2):
         self.pushButton_6.clicked.connect(self.page4)
         self.pushButton_8.setIcon(QIcon("./library/imgs/main/setting.png"))
         self.pushButton_8.clicked.connect(self.page5)
+        self.pushButton_10.clicked.connect(self.page6)
+        self.textBrowser.verticalScrollBar().setStyleSheet(
+            command.css_load("./library/css/scroll_bar.css"))
+        self.textEdit.verticalScrollBar().setStyleSheet(
+            command.css_load("./library/css/scroll_bar.css"))
+
+        self.pushButton_14.clicked.connect(self.open_dir)
+        self.pushButton_11.clicked.connect(self.examine_update)
+        self.pushButton_15.clicked.connect(self.switch_account)
+        self.label_55.setVisible(False)
+        self.pushButton_18.setVisible(False)
+        self.pushButton_16.setEnabled(False)
+        self.pushButton_18.setEnabled(False)
+
+        self.pushButton_13.clicked.connect(self.search_friend)
+        self.label_47.setVisible(False)
+        self.label_48.setVisible(False)
+        self.label_49.setVisible(False)
+        self.label_50.setVisible(False)
+        self.label_51.setVisible(False)
+        self.label_52.setVisible(False)
+        self.pushButton_17.setVisible(False)
+
+        self.add_friend = ''
         self.enter = command.press()
         self.moni = moniter()
         self.moni.signal.connect(self.moniter_)
@@ -684,6 +807,49 @@ class MyMainmain(QMainWindow, Ui_tellroom_2):
                 self.kong += " "
 
         self.show_data()
+
+        self.listView = ListView(self.tab_5)
+        self.listView.setGeometry(QRect(0, 40, 161, 441))
+        self.listView.setObjectName("listView")
+        self.listView.setModel(self.listView.friend_model)
+        self.listView.left_clicked.connect(self.open_telling_room)
+        self.listView.right_clicked.connect(self.page9)
+
+        s.sendall("get_friends：{a}：{b}".format(
+            a=username, b=des_key).encode("gb2312"))
+        msg = receive_if()
+        msg_2 = msg.split('：')
+        if msg_2[0] == "list_friends":
+            self.friend_list = json5.loads(msg_2[1])["friend"]
+        else:
+            self.friend_list = []
+        self.update_friend_list()
+
+    def open_telling_room(self, index):
+        friend = self.listView.friend_model.getItem(index)
+        if friend == None:
+            return
+        name = friend["name"]
+        self.label_59.setText(name)
+        self.tabWidget_2.setCurrentWidget(self.tab_10)
+
+    def update_friend_list(self):
+        if len(self.listView.friend_model.ListItemData) == 0:
+            for i in self.friend_list:
+                self.listView.friend_model.data_init(i["name"], '')  # 以后需要修改
+        else:
+            s.sendall("get_friends：{a}：{b}".format(
+                a=username, b=des_key).encode("gb2312"))
+            msg = receive_if()
+            command.command(self, msg)
+            msg_2 = msg.split('：')
+            if msg_2[0] == "list_friends":
+                self.friend_list = json5.loads(msg_2[1])["friend"]
+            else:
+                self.friend_list = []
+            self.listView.friend_model.ListItemData = []
+            for i in self.friend_list:
+                self.listView.friend_model.data_init(i["name"], '')  # 以后需要修改
 
     def show_data(self):
         global s
@@ -711,6 +877,50 @@ class MyMainmain(QMainWindow, Ui_tellroom_2):
             except:
                 pass
 
+    def search_friend(self):
+        research = self.lineEdit.text().strip()
+        if len(research) == 0:
+            return
+
+        s.sendall("get_id：".encode('gb2312')+research.encode("gb2312"))
+        msg = receive_if()
+        command.command(self, msg)
+        msg = msg.split("：")
+        if msg[0] == "get_id_no":
+            self.label_51.setText("未搜到")
+            self.label_51.setVisible(True)
+            self.label_52.setVisible(True)
+        elif msg[0] == "get_id_ok":
+            self.label_51.setText("搜到")
+            self.label_48.setText(msg[1])
+            self.label_49.setText(research)
+            self.add_friend = "add_friends：{a}：{b}：{c}：{d}".format(
+                a=username, b=des_key, c=msg[1], d=research)
+            self.pushButton_17.clicked.connect(self.add_friend_func)
+
+            self.label_47.setVisible(True)
+            self.label_48.setVisible(True)
+            self.label_49.setVisible(True)
+            self.label_50.setVisible(True)
+            self.label_51.setVisible(True)
+            self.label_52.setVisible(True)
+            self.pushButton_17.setVisible(True)
+
+    def add_friend_func(self):
+        s.sendall(self.add_friend.encode('gb2312'))
+        msg = receive_if()
+        command.command(self, msg)
+
+        self.label_47.setVisible(False)
+        self.label_48.setVisible(False)
+        self.label_49.setVisible(False)
+        self.label_50.setVisible(False)
+        self.label_51.setVisible(False)
+        self.label_52.setVisible(False)
+        self.pushButton_17.setVisible(False)
+
+        self.update_friend_list()
+
     def page1(self):
         self.tabWidget.setCurrentWidget(self.tab_2)
 
@@ -725,6 +935,15 @@ class MyMainmain(QMainWindow, Ui_tellroom_2):
 
     def page5(self):
         self.tabWidget.setCurrentWidget(self.tab_6)
+
+    def page6(self):
+        self.tabWidget.setCurrentWidget(self.tab_7)
+
+    def page9(self):
+        self.tabWidget_2.setCurrentWidget(self.tab_9)
+
+    def page10(self):
+        self.tabWidget_2.setCurrentWidget(self.tab_10)
 
     def send(self):
         text = self.textEdit.toPlainText()
@@ -787,6 +1006,20 @@ class MyMainmain(QMainWindow, Ui_tellroom_2):
             self.lineEdit_3.setText("")
             self.lineEdit_2.setText("")
 
+    def open_dir(self):
+        os.system("explorer "+os.getcwd())
+
+    def examine_update(self):
+        if can_update == 1:
+            self.label_55.setText("有新版本！")
+            self.label_55.setStyleSheet("color:Green")
+            self.label_55.setVisible(True)
+            self.pushButton_18.setVisible(True)
+        else:
+            self.label_55.setText("您已是最新版！")
+            self.label_55.setStyleSheet("color:Blue")
+            self.label_55.setVisible(True)
+
     def closeEvent(self, event):
         if not self.close_num == 1:
             reply = QMessageBox.question(
@@ -814,6 +1047,38 @@ class MyMainmain(QMainWindow, Ui_tellroom_2):
         self.showMinimized()
         self.setWindowFlags(Qt.SplashScreen)
         self.show()
+
+    def switch_account(self):
+        reply = QMessageBox.question(
+            self, "关闭", "你确定要切换账户吗？", QMessageBox.Yes, QMessageBox.No)
+        if reply == QMessageBox.No:
+            return
+        self.close_num = 1
+        self.close()
+
+        try:
+            with open("./library/datas/data.json", "r") as f:
+                logdata = json.load(f)
+            logdata[1] = False
+            with open("./library/datas/data.json", "w") as f:
+                json.dump(logdata, f)
+        except:
+            pass
+
+        self.close_num = 0
+        global s
+        global Receive_
+        Receive_.terminate()
+        Receive_.wait()
+        s.close()
+        del Receive_, s
+        dell()
+        init()
+        self.login = MyMainForm()
+        self.login.show()
+        sip.delete(self)
+        del self
+        gc.collect()
 
 
 def main():

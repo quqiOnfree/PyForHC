@@ -120,11 +120,11 @@ def command(self, msg):
     lit = msg.split("：")
 
     if lit[0] == "tip":
-        QMessageBox.critical(self, "警告", lit[1], QMessageBox.Ok)
+        QMessageBox.critical(self, "严重警告", lit[1], QMessageBox.Ok)
         sys.exit()
 
     elif lit[0] == "message":
-        QMessageBox.warning(self, "警告", lit[1]+"："+lit[2], QMessageBox.Ok)
+        QMessageBox.information(self, "信息", lit[1]+"："+lit[2], QMessageBox.Ok)
         return 0
 
     elif lit[0] == "login_no":
